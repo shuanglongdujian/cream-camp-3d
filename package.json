@@ -1,0 +1,8 @@
+{
+  "name": "cream-camp-3d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "node server.mjs", "start": "node server.mjs", "test": "node --test tests/*.test.mjs", "check": "node scripts/check.mjs" },
+  "description": "A pastel miniature camping simulation. Three.js 0.186.1 is vendored locally with its MIT license."
+}

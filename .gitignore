@@ -1,0 +1,7 @@
+node_modules/
+*.tgz
+*.tar.gz
+screenshots/
+test-results/
+.openai/
+.sites-cache/
