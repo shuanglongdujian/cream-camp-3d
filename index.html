@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f2e9">
+  <meta name="description" content="一小片森林，一点慢下来的时光。在马卡龙色的 3D 微缩世界里，布置营地、生火做饭，听雨等天晴。">
+  <title>奶油营地 · 把日子安放在山野</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23d9e6d4'/%3E%3Cpath d='M10 48 32 14 54 48Z' fill='%23efb5b7' stroke='%233f4a45' stroke-width='3'/%3E%3Cpath d='M23 48 32 32 41 48' fill='%23fff7ed'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<div class="app" id="app">
+  <div id="scene" aria-label="可以旋转与布置的三维森林湖畔营地"></div>
+  <div class="scene-vignette" aria-hidden="true"></div>
+  <div class="loading" id="loading"><span class="loading-tent" data-icon="tent"></span><span>正在铺好这一片山野…</span></div>
+  <div class="error-state" id="error-state" hidden><div class="paper"><h1>营地暂时没有展开</h1><p id="error-detail">浏览器需要支持 WebGL 2。请尝试更新浏览器并开启硬件加速。</p><button class="button primary" id="reload">重新加载</button></div></div>
+
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="奶油营地首页"><span class="brand-mark" data-icon="tent"></span><span><strong>奶油营地<span class="brand-dot">.</span></strong><small>CREAM CAMP</small></span></a>
+    <span class="location-label"><span data-icon="pin"></span> 林间湖畔 <span class="location-dot">·</span> 一段慢下来的时光</span>
+    <div class="header-actions"><span id="save-status" class="save-status"><i></i> 本地存档</span><button class="icon-button" id="sound-toggle" aria-label="开启环境声音" title="开启环境声音" data-icon="soundOff"></button><button class="icon-button" id="photo" aria-label="拍摄营地照片" title="拍摄照片" data-icon="camera"></button><button class="icon-button" id="settings-button" aria-label="设置与存档" title="设置与存档" data-icon="settings"></button></div>
+  </header>
+
+  <aside class="field-notes">
+    <div class="eyebrow"><span class="tiny-line"></span> YOUR LITTLE ESCAPE</div>
+    <h1>把日子，<br>安放在山野<span>。</span></h1>
+    <p class="poem">风经过树梢，湖水刚好温柔。<br>今天，把时间留给自己。</p>
+    <div class="session-card" id="session-card"><div class="session-top"><span class="sun-stamp" data-icon="sun"></span><span class="eyebrow">A SLOW AFTERNOON</span></div><p id="session-description">搭一顶喜欢的帐篷，<br>等一场雨，也等一顿热饭。</p><button class="button primary" id="start-button">开始露营 <span data-icon="arrow"></span></button><small id="session-hint">一个约 12 分钟的露营日 · 随时暂停</small></div>
+    <div class="daily-wishes" id="daily-wishes"><span class="eyebrow">今晚的小心愿</span><ul><li id="wish-shelter"><span class="checkmark"></span>搭起一片遮雨天幕</li><li id="wish-fire"><span class="checkmark"></span>让营火暖起来</li><li id="wish-food"><span class="checkmark"></span>煮一份热乎的晚餐</li></ul></div>
+  </aside>
+
+  <aside class="status-panel paper" aria-label="露营状态">
+    <div class="status-header"><span class="eyebrow" id="day-label">DAY 01</span><span class="live-dot"></span><span id="running-label">准备出发</span></div>
+    <div class="time-weather"><div><time id="clock">14:00</time><span id="time-period">午后时光</span></div><span class="weather-art" id="weather-icon" data-icon="sun"></span></div>
+    <div class="forecast"><span id="weather-text">晴朗 · 微风经过湖面</span><small id="forecast-text">傍晚可能有一场小雨</small></div>
+    <div class="day-track"><span id="day-progress"></span></div>
+    <div class="stat-list"><div class="stat-row"><span data-icon="heart"></span><label for="comfort-meter">舒适</label><meter id="comfort-meter" min="0" max="100" value="70"></meter><b id="comfort-value">70</b></div><div class="stat-row"><span data-icon="leaf"></span><label for="energy-meter">精力</label><meter id="energy-meter" min="0" max="100" value="85"></meter><b id="energy-value">85</b></div><div class="stat-row"><span data-icon="fire"></span><label for="warmth-meter">温暖</label><meter id="warmth-meter" min="0" max="100" value="75"></meter><b id="warmth-value">75</b></div></div>
+    <div class="resources"><span><i data-icon="wood"></i><b id="wood-count">8</b><small>木柴</small></span><span><i data-icon="food"></i><b id="food-count">4</b><small>食材</small></span><span><i data-icon="drop"></i><b id="water-count">5</b><small>饮水</small></span></div>
+    <div class="time-controls"><button class="icon-button small" id="pause-button" aria-label="暂停或继续" data-icon="pause"></button><div class="speed-group" aria-label="时间速度"><button class="speed active" data-speed="1">1×</button><button class="speed" data-speed="3">3×</button><button class="speed" data-speed="10">10×</button></div><button class="text-button" id="weather-button" title="切换试验天气">天气 <span data-icon="chevron"></span></button></div>
+  </aside>
+
+  <div class="scene-tools"><button class="icon-button" id="camera-reset" aria-label="回到营地视角" title="回到营地视角" data-icon="focus"></button><button class="icon-button" id="zoom-in" aria-label="拉近镜头" title="拉近镜头" data-icon="plus"></button><button class="icon-button" id="zoom-out" aria-label="拉远镜头" title="拉远镜头" data-icon="minus"></button></div>
+  <button class="journal-button paper" id="journal-button"><span class="journal-symbol" data-icon="book"></span><span>营地手记<small id="journal-preview">故事从抵达的这一刻开始</small></span><span data-icon="arrow"></span></button>
+  <div class="selection-bar paper" id="selection-bar" hidden><span id="selection-name"></span><span id="placement-message"></span><div><button class="text-button" id="rotate-button"><span data-icon="rotate"></span>旋转 <kbd>R</kbd></button><button class="text-button" id="move-button" hidden>移动</button><button class="text-button danger" id="remove-button" hidden>收起</button><button class="text-button" id="cancel-button">取消 <kbd>Esc</kbd></button></div></div>
+
+  <section class="camp-dock paper" aria-label="营地工具">
+    <div class="dock-top"><div class="mode-tabs" role="tablist" aria-label="营地模式"><button id="build-tab" class="mode-tab active" role="tab" aria-selected="true" aria-controls="build-panel"><span data-icon="tent"></span>营地布置</button><button id="life-tab" class="mode-tab" role="tab" aria-selected="false" aria-controls="life-panel"><span data-icon="mug"></span>露营生活</button></div><span class="mode-hint" id="mode-hint">把喜欢的小物，放在喜欢的位置</span><button class="text-button dock-gather" id="dock-gather" hidden>捡柴</button><button class="icon-button small" id="undo-button" aria-label="撤回上次布置" title="撤回上次布置" data-icon="undo" disabled></button><button class="icon-button small" id="help-button" aria-label="操作帮助" title="操作帮助" data-icon="help"></button></div>
+    <div id="build-panel" role="tabpanel" aria-labelledby="build-tab" class="tool-row"></div>
+    <div id="life-panel" role="tabpanel" aria-labelledby="life-tab" class="tool-row" hidden></div>
+    <div class="activity-status" id="activity-status" hidden><span id="activity-name"></span><progress id="activity-progress" max="100" value="0"></progress><span id="activity-remaining"></span></div>
+  </section>
+  <div class="bottom-caption"><span data-icon="mouse"></span><span id="interaction-hint">拖动旋转视角 · 滚轮缩放 · 点击小物查看</span><span class="edition">VOL. 01 / FOREST LAKE</span></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<dialog id="settings-dialog"><div class="dialog-heading"><div><span class="eyebrow">MAKE YOURSELF AT HOME</span><h2>你的露营偏好</h2></div><button class="icon-button close-dialog" aria-label="关闭设置" data-icon="close"></button></div><div class="setting-row"><label for="volume">环境音量</label><input id="volume" type="range" min="0" max="100" value="35"></div><div class="setting-row"><label for="quality">画面质量</label><select id="quality"><option value="high">细腻</option><option value="medium" selected>均衡</option><option value="low">省电</option></select></div><label class="setting-row"><span>减少动态效果</span><input type="checkbox" id="reduced-motion"></label><div class="setting-row"><label for="weather-select">天气体验</label><select id="weather-select"><option value="auto">自然变化</option><option value="sunny">晴朗</option><option value="cloudy">阴天</option><option value="rain">小雨</option></select></div><p class="dialog-note">天气试验会立即改变营地环境和模拟结果。自然模式下，傍晚会有一场小雨。</p><div class="dialog-section"><h3>留住这一片山野</h3><p>进度自动保存在当前浏览器。导出文件可以备份，或在另一台设备导入继续。</p><div class="dialog-buttons"><button class="button secondary" id="export-save">导出存档</button><button class="button secondary" id="import-save">导入存档</button><input id="import-file" type="file" accept=".json,application/json" hidden></div></div><div class="dialog-footer"><button class="text-button danger" id="restart-button">重新开始</button><button class="button primary close-dialog">回到营地</button></div></dialog>
+<dialog id="journal-dialog"><div class="dialog-heading"><div><span class="eyebrow">LITTLE MOMENTS</span><h2>山野里的小事</h2></div><button class="icon-button close-dialog" aria-label="关闭手记" data-icon="close"></button></div><ol id="journal-list"></ol><p class="dialog-note">这里记录实际发生的营地事件。</p></dialog>
+<dialog id="help-dialog"><div class="dialog-heading"><div><span class="eyebrow">A SMALL FIELD GUIDE</span><h2>慢慢来，很容易</h2></div><button class="icon-button close-dialog" aria-label="关闭帮助" data-icon="close"></button></div><div class="guide"><p><b>01 / 找个舒服的角度</b>拖动空地旋转镜头，滚轮或双指缩放。点击左侧取景按钮回到默认视角。</p><p><b>02 / 布置自己的营地</b>从底部选物，再点击草地放置。按 R 或旋转按钮调整方向，Esc 取消。点击已有设施可移动或收起。手机也可点选、点地放置。</p><p><b>03 / 让生活发生</b>点击“开始露营”，切到“露营生活”。点火、备餐、饮水与休息会消耗物资、改变状态。有些操作需要等待。</p><p><b>04 / 等一场雨</b>天幕提供遮雨效果。留意木柴、火焰与温暖；不理想也能调整。布置、菜单、后台页面会暂停时间。</p><p><b>05 / 带走一个好故事</b>一个露营日约 12 分钟，可选 3× 或 10× 加速。右上角拍照，设置中备份存档；露营结束后会看到你的记录。</p></div><button class="button primary close-dialog">知道了，去看看</button></dialog>
+<dialog id="summary-dialog"><div class="summary-stamp" data-icon="sunrise"></div><span class="eyebrow">A NIGHT TO REMEMBER</span><h2>把这一晚，留在心里。</h2><p>天亮了。湖边的风，替你收好了昨晚的故事。</p><div id="summary-content"></div><div class="dialog-buttons"><button class="button secondary" id="summary-photo">拍一张纪念照</button><button class="button primary" id="new-trip">再来一次露营</button></div><button class="text-button close-dialog">留在营地看看</button></dialog>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
