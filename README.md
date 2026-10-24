@@ -4,6 +4,10 @@
 
 一个奶油色的小岛，一点慢下来的时光。森林湖畔、粉色帐篷、薄荷树木与暖黄营灯构成可旋转的微缩营地。
 
+**[打开游戏，在线游玩](https://shuanglongdujian.github.io/cream-camp-3d/)**
+
+在线版本由 GitHub Pages 托管，打开链接即可体验，无需下载源码。
+
 ## 运行
 
 需要 Node.js（本机已使用 v24.15.0 验证）。下载或克隆本仓库后，在项目根目录打开终端：
@@ -61,3 +65,13 @@ npm run check
 
 
 本仓库保存可运行源码、测试与展示图片。浏览器游戏入口为 dist/index.html，通过本地 HTTP 服务运行。
+
+## GitHub Pages 发布
+
+源码保存在 main 分支，网页文件从 gh-pages 分支根目录发布。修改 dist 中的内容并提交后，使用下面的命令同步在线版本：
+
+```powershell
+git subtree push --prefix dist origin gh-pages
+```
+
+dist/.nojekyll 用于直接发布静态文件。游戏资源均使用相对路径，适配仓库的子目录地址。
